@@ -1,0 +1,10 @@
+allure_results
+logs
+.venv
+.env
+.venv/
+__pycache__/
+allure-results/
+allure-report/
+.idea/
+*.pyc
