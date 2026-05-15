@@ -3,17 +3,31 @@ BOOKING_PAYLOAD = {
     "lastname": "Doe",
     "totalprice": 100,
     "depositpaid": True,
-    "bookingdates": {"checkin": '2026-01-01', "checkout": '2026-01-05'}
+    "bookingdates": {
+        "checkin": "2026-01-01",
+        "checkout": "2026-01-05"
+    }
+}
+
+BOOKING_EMPTY_FIRSTNAME_PAYLOAD = {
+      "firstname": "",
+      "lastname": "Doe",
+      "totalprice": 100,
+      "depositpaid": True,
+      "bookingdates": {
+          "checkin": "2026-01-01",
+          "checkout": "2026-01-05"
+      }
 }
 
 UPDATED_BOOKING_PAYLOAD = {
     "firstname": "Dannie",
-    "lastname": "Doe",
-    "totalprice": 100,
-    "depositpaid": True,
+    "lastname": "Brown",
+    "totalprice": 200,
+    "depositpaid": False,
     "bookingdates": {
-        "checkin": "2026-01-01",
-        "checkout": "2026-01-05"
+        "checkin": "2026-01-02",
+        "checkout": "2026-01-06"
     },
     "additionalneeds": "Breakfast"
 }

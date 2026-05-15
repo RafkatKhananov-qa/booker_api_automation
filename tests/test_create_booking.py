@@ -1,3 +1,5 @@
+import allure
+
 from api.booking_api import create_booking, get_booking
 from data.schemas import BOOKING_SCHEMA
 from utils.assertions import (assert_status_code,
@@ -6,71 +8,84 @@ from utils.assertions import (assert_status_code,
 from jsonschema import validate
 
 
-def test_post_001(api_headers):
-    r = create_booking(headers=api_headers)
-    assert_status_code(r, 200)
-    assert_field_in_response_message(r, "bookingid")
-    assert_field_value_type(r, "bookingid", int)
+@allure.feature("Create Booking")
+class TestCreateBooking:
+    @allure.story("Успешное создание брони")
+    @allure.title("Создание валидной брони")
+    def test_post_001(self, api_headers):
+        r = create_booking(headers=api_headers)
+        assert_status_code(r, 200)
+        assert_field_in_response_message(r, "bookingid")
+        assert_field_value_type(r, "bookingid", int)
 
+    @allure.story("Успешное создание брони")
+    @allure.title("Создание брони с минимальными полями")
+    def test_post_002(self, api_headers):
+        r = create_booking(headers=api_headers)
+        assert_status_code(r, 200)
 
-def test_post_002(api_headers):
-    r = create_booking(headers=api_headers)
-    assert_status_code(r, 200)
+    @allure.story("Успешное создание брони")
+    @allure.title("Создание брони с depositpaid=false")
+    def test_post_003(self, api_headers):
+        r = create_booking(api_headers, depositpaid=False)
+        assert_status_code(r, 200)
+        assert r.json()["booking"]["depositpaid"] is False
 
+    @allure.story("Успешное создание брони")
+    @allure.title("Создание брони с additionalneeds")
+    def test_post_004(self, api_headers):
+        r = create_booking(api_headers, additionalneeds="Breakfast")
+        assert_status_code(r, 200)
+        assert r.json()["booking"]["additionalneeds"] == "Breakfast"
 
-def test_post_003(api_headers):
-    r = create_booking(api_headers, depositpaid=False)
-    assert_status_code(r, 200)
-    assert r.json()["booking"]["depositpaid"] is False
+    @allure.story("Негативные сценарии создания брони")
+    @allure.title("Создание брони с checkout раньше checkin")
+    def test_post_005(self, api_headers):
+        r = create_booking(api_headers, checkin="2026-05-07", checkout="2026-05-01")
+        assert_status_code(r, 200)
+        assert r.json()["booking"]["bookingdates"]["checkin"] == "2026-05-07"
+        assert r.json()["booking"]["bookingdates"]["checkout"] == "2026-05-01"
 
+    @allure.story("Негативные сценарии создания брони")
+    @allure.title("Создание брони с пустым firstname")
+    def test_post_006(self, api_headers):
+        r = create_booking(api_headers, firstname="")
+        assert_status_code(r, 200)
+        assert r.json()["booking"]["firstname"] == ""
 
-def test_post_004(api_headers):
-    r = create_booking(api_headers, additionalneeds="Breakfast")
-    assert_status_code(r, 200)
-    assert r.json()["booking"]["additionalneeds"] == "Breakfast"
+    @allure.story("Негативные сценарии создания брони")
+    @allure.title("Создание брони с превышением лимита lastname")
+    def test_post_007(self, api_headers):
+        r = create_booking(api_headers, lastname="A" * 102255)
+        assert_status_code(r, 413)
 
+    @allure.story("Валидация и проверка данных брони")
+    @allure.title("Валидация схемы созданной брони")
+    def test_post_008(self, api_headers):
+        r = create_booking(headers=api_headers)
+        assert_status_code(r, 200)
+        validate(instance=r.json()["booking"], schema=BOOKING_SCHEMA)
 
-def test_post_005(api_headers):
-    r = create_booking(api_headers, checkin="2026-05-07", checkout="2026-05-01")
-    assert_status_code(r, 200)
-    assert r.json()["booking"]["bookingdates"]["checkin"] == "2026-05-07"
-    assert r.json()["booking"]["bookingdates"]["checkout"] == "2026-05-01"
+    @allure.story("Валидация и проверка данных брони")
+    @allure.title("Проверка уникальности bookingid")
+    def test_post_009(self, api_headers):
+        r = create_booking(headers=api_headers)
+        assert_status_code(r, 200)
+        booking_id_1 = r.json()["bookingid"]
 
+        r = create_booking(headers=api_headers)
+        assert_status_code(r, 200)
+        booking_id_2 = r.json()["bookingid"]
 
-def test_post_006(api_headers):
-    r = create_booking(api_headers, firstname="")
-    assert_status_code(r, 200)
-    assert r.json()["booking"]["firstname"] == ""
+        assert booking_id_1 != booking_id_2
 
+    @allure.story("Успешное создание брони")
+    @allure.title("Проверка, что созданная бронь доступна по GET")
+    def test_post_010(self, api_headers):
+        r = create_booking(headers=api_headers)
+        assert_status_code(r, 200)
+        booking_id = r.json()["bookingid"]
 
-def test_post_007(api_headers):
-    r = create_booking(api_headers, lastname="A"*102255)
-    assert_status_code(r, 413)
-
-
-def test_post_008(api_headers):
-    r = create_booking(headers=api_headers)
-    assert_status_code(r, 200)
-    validate(instance=r.json()["booking"], schema=BOOKING_SCHEMA)
-
-
-def test_post_009(api_headers):
-    r = create_booking(headers=api_headers)
-    assert_status_code(r, 200)
-    booking_id_1 = r.json()["bookingid"]
-
-    r = create_booking(headers=api_headers)
-    assert_status_code(r, 200)
-    booking_id_2 = r.json()["bookingid"]
-
-    assert booking_id_1 != booking_id_2
-
-
-def test_post_010(api_headers):
-    r = create_booking(headers=api_headers)
-    assert_status_code(r, 200)
-    booking_id = r.json()["bookingid"]
-
-    r = get_booking(booking_id)
-    assert_status_code(r, 200)
-    validate(instance=r.json(), schema=BOOKING_SCHEMA)
+        r = get_booking(booking_id)
+        assert_status_code(r, 200)
+        validate(instance=r.json(), schema=BOOKING_SCHEMA)

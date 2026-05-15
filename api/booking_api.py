@@ -1,9 +1,11 @@
+import allure
 import requests
 
 from config.secret_config import BASE_URL
 from data.payloads import BOOKING_PAYLOAD, UPDATED_BOOKING_PAYLOAD
 
 
+@allure.step("POST /booking - создать бронь")
 def create_booking(
         headers: dict,
         checkin=None,
@@ -29,6 +31,7 @@ def create_booking(
     )
 
 
+@allure.step("GET /booking - получить список броней")
 def get_bookings(firstname=None, lastname=None,
                  checkin=None, checkout=None):
     params = {}
@@ -51,22 +54,26 @@ def get_bookings(firstname=None, lastname=None,
     )
 
 
+@allure.step("GET /booking/{booking_id} - получить бронь")
 def get_booking(booking_id: int):
     return requests.get(f"{BASE_URL}/booking/{booking_id}")
 
 
-def update_booking(booking_id: int, headers: dict):
+@allure.step("PUT /booking/{booking_id} - обновить бронь")
+def update_booking(booking_id: int, headers: dict, payload: dict = None):
     return requests.put(f"{BASE_URL}/booking/{booking_id}",
                         headers=headers,
-                        json=UPDATED_BOOKING_PAYLOAD)
+                        json=payload or UPDATED_BOOKING_PAYLOAD)
 
 
-def patch_booking(booking_id: int, headers: dict):
+@allure.step("PATCH /booking/{booking_id} - частично обновить бронь")
+def patch_booking(booking_id: int, headers: dict, payload: dict = None):
     return requests.patch(f"{BASE_URL}/booking/{booking_id}",
                           headers=headers,
-                          json={"totalprice": 200})
+                          json=payload)
 
 
+@allure.step("DELETE /booking/{booking_id} - удалить бронь")
 def delete_booking(booking_id: int, headers: dict):
     return requests.delete(f"{BASE_URL}/booking/{booking_id}",
                            headers=headers)
