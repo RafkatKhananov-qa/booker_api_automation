@@ -2,11 +2,12 @@ import allure
 
 from api.auth_api import create_token
 from api.booking_api import create_booking, update_booking, patch_booking
-from data.payloads import BOOKING_EMPTY_FIRSTNAME_PAYLOAD
+from data.payloads import (BOOKING_EMPTY_FIRSTNAME_PAYLOAD, UPDATED_BOOKING_PAYLOAD,
+                           UPDATED_FIRSTNAME_BOOKING_PAYLOAD, UPDATED_PRICE_BOOKING_PAYLOAD,
+                           UPDATED_DEPOSITPAID_BOOKING_PAYLOAD)
 from data.schemas import BOOKING_SCHEMA
 from utils.assertions import (assert_status_code,
-                              assert_field_in_response_message,
-                              assert_response_message)
+                              assert_field_in_response_message)
 from jsonschema import validate
 
 
@@ -27,13 +28,10 @@ class TestUpdateBooking:
 
         r = update_booking(booking_id, headers=api_headers_with_cookie(token))
         assert_status_code(r, 200)
-        assert_response_message(r, "firstname", "Dannie")
-        assert_response_message(r, "lastname", "Brown")
-        assert_response_message(r, "totalprice", 200)
-        assert_response_message(r, "depositpaid", False)
-        assert r.json()["bookingdates"]["checkin"] == "2026-01-02"
-        assert r.json()["bookingdates"]["checkout"] == "2026-01-06"
-        assert_response_message(r, "additionalneeds", "Breakfast")
+        response_data = r.json()
+
+        for key, value in UPDATED_BOOKING_PAYLOAD.items():
+            assert response_data[key] == value
 
     @allure.story("Успешное обновление брони")
     @allure.title("Частичное обновление брони (PATCH) с токеном")
@@ -48,14 +46,13 @@ class TestUpdateBooking:
         assert_field_in_response_message(r, "bookingid")
         booking_id = r.json()["bookingid"]
 
-        r = patch_booking(booking_id, headers=api_headers_with_cookie(token), payload={"firstname": "Jackson"})
+        r = patch_booking(booking_id, headers=api_headers_with_cookie(token),
+                          payload={"firstname": "Jackson"})
         assert_status_code(r, 200)
-        assert_response_message(r, "firstname", "Jackson")
-        assert_response_message(r, "lastname", "Doe")
-        assert_response_message(r, "totalprice", 100)
-        assert_response_message(r, "depositpaid", True)
-        assert r.json()["bookingdates"]["checkin"] == "2026-01-01"
-        assert r.json()["bookingdates"]["checkout"] == "2026-01-05"
+        response_data = r.json()
+
+        for key, value in UPDATED_FIRSTNAME_BOOKING_PAYLOAD.items():
+            assert response_data[key] == value
 
     @allure.story("Негативные сценарии обновления брони")
     @allure.title("Обновление несуществующей брони")
@@ -110,12 +107,10 @@ class TestUpdateBooking:
         r = update_booking(booking_id, headers=api_headers_with_cookie(token),
                            payload=BOOKING_EMPTY_FIRSTNAME_PAYLOAD)
         assert_status_code(r, 200)
-        assert_response_message(r, "firstname", "")
-        assert_response_message(r, "lastname", "Doe")
-        assert_response_message(r, "totalprice", 100)
-        assert_response_message(r, "depositpaid", True)
-        assert r.json()["bookingdates"]["checkin"] == "2026-01-01"
-        assert r.json()["bookingdates"]["checkout"] == "2026-01-05"
+        response_data = r.json()
+
+        for key, value in BOOKING_EMPTY_FIRSTNAME_PAYLOAD.items():
+            assert response_data[key] == value
 
     @allure.story("Успешное обновление брони")
     @allure.title("Обновление с изменением дат")
@@ -132,8 +127,10 @@ class TestUpdateBooking:
 
         r = update_booking(booking_id, headers=api_headers_with_cookie(token))
         assert_status_code(r, 200)
-        assert r.json()["bookingdates"]["checkin"] == "2026-01-02"
-        assert r.json()["bookingdates"]["checkout"] == "2026-01-06"
+        response_data = r.json()
+
+        for key, value in UPDATED_BOOKING_PAYLOAD.items():
+            assert response_data[key] == value
 
     @allure.story("Успешное обновление брони")
     @allure.title("Валидация схемы после обновления")
@@ -150,13 +147,11 @@ class TestUpdateBooking:
 
         r = update_booking(booking_id, headers=api_headers_with_cookie(token))
         assert_status_code(r, 200)
-        assert_response_message(r, "firstname", "Dannie")
-        assert_response_message(r, "lastname", "Brown")
-        assert_response_message(r, "totalprice", 200)
-        assert_response_message(r, "depositpaid", False)
-        assert r.json()["bookingdates"]["checkin"] == "2026-01-02"
-        assert r.json()["bookingdates"]["checkout"] == "2026-01-06"
-        assert_response_message(r, "additionalneeds", "Breakfast")
+        response_data = r.json()
+
+        for key, value in UPDATED_BOOKING_PAYLOAD.items():
+            assert response_data[key] == value
+
         validate(instance=r.json(), schema=BOOKING_SCHEMA)
 
     @allure.story("Успешное обновление брони")
@@ -175,12 +170,10 @@ class TestUpdateBooking:
         r = patch_booking(booking_id, headers=api_headers_with_cookie(token),
                           payload={"totalprice": 500})
         assert_status_code(r, 200)
-        assert_response_message(r, "firstname", "John")
-        assert_response_message(r, "lastname", "Doe")
-        assert_response_message(r, "totalprice", 500)
-        assert_response_message(r, "depositpaid", True)
-        assert r.json()["bookingdates"]["checkin"] == "2026-01-01"
-        assert r.json()["bookingdates"]["checkout"] == "2026-01-05"
+        response_data = r.json()
+
+        for key, value in UPDATED_PRICE_BOOKING_PAYLOAD.items():
+            assert response_data[key] == value
 
     @allure.story("Успешное обновление брони")
     @allure.title("PATCH: обновление только depositpaid")
@@ -198,9 +191,7 @@ class TestUpdateBooking:
         r = patch_booking(booking_id, headers=api_headers_with_cookie(token),
                           payload={"depositpaid": False})
         assert_status_code(r, 200)
-        assert_response_message(r, "firstname", "John")
-        assert_response_message(r, "lastname", "Doe")
-        assert_response_message(r, "totalprice", 100)
-        assert_response_message(r, "depositpaid", False)
-        assert r.json()["bookingdates"]["checkin"] == "2026-01-01"
-        assert r.json()["bookingdates"]["checkout"] == "2026-01-05"
+        response_data = r.json()
+
+        for key, value in UPDATED_DEPOSITPAID_BOOKING_PAYLOAD.items():
+            assert response_data[key] == value

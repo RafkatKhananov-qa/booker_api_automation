@@ -6,6 +6,7 @@ from api.auth_api import create_token
 from api.booking_api import (create_booking, get_bookings,
                              get_booking, update_booking,
                              patch_booking, delete_booking)
+from config.secret_config import BASE_URL
 from data.schemas import BOOKING_SCHEMA, BOOKINGS_LIST_SCHEMA
 from utils.assertions import (assert_status_code, assert_array_not_empty,
                               assert_field_in_response_message,
@@ -118,7 +119,7 @@ class TestValidation:
     @allure.story("Обработка 400 (Bad Request)")
     @allure.title("Отправить невалидный JSON")
     def test_err_001(self):
-        r = requests.post("https://restful-booker.herokuapp.com/auth", headers={
+        r = requests.post(f"{BASE_URL}/auth", headers={
             "Content-Type": "application/json"
         }, data="not valid json {{{")
         assert_status_code(r, 400)
@@ -156,4 +157,4 @@ class TestValidation:
     @allure.title("Проверка таймаута запроса")
     def test_err_004(self):
         with pytest.raises(requests.exceptions.Timeout):
-            requests.get("https://restful-booker.herokuapp.com/booking", timeout=0.001)
+            requests.get(f"{BASE_URL}/booking", timeout=0.001)
