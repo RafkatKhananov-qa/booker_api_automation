@@ -33,7 +33,7 @@ def create_booking(
 
 @allure.step("GET /booking - получить список броней")
 def get_bookings(firstname=None, lastname=None,
-                 checkin=None, checkout=None):
+                 checkin=None, checkout=None, timeout=None):
     params = {}
 
     if firstname:
@@ -50,7 +50,8 @@ def get_bookings(firstname=None, lastname=None,
 
     return requests.get(
         f"{BASE_URL}/booking",
-        params=params
+        params=params,
+        timeout=timeout
     )
 
 

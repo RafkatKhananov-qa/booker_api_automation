@@ -7,7 +7,7 @@ from data.payloads import (BOOKING_EMPTY_FIRSTNAME_PAYLOAD, UPDATED_BOOKING_PAYL
                            UPDATED_DEPOSITPAID_BOOKING_PAYLOAD)
 from data.schemas import BOOKING_SCHEMA
 from utils.assertions import (assert_status_code,
-                              assert_field_in_response_message)
+                              assert_field_in_response_message, assert_response_fields)
 from jsonschema import validate
 
 
@@ -30,8 +30,10 @@ class TestUpdateBooking:
         assert_status_code(r, 200)
         response_data = r.json()
 
-        for key, value in UPDATED_BOOKING_PAYLOAD.items():
-            assert response_data[key] == value
+        assert_response_fields(
+            response_data,
+            UPDATED_BOOKING_PAYLOAD
+        )
 
     @allure.story("Успешное обновление брони")
     @allure.title("Частичное обновление брони (PATCH) с токеном")
@@ -51,8 +53,10 @@ class TestUpdateBooking:
         assert_status_code(r, 200)
         response_data = r.json()
 
-        for key, value in UPDATED_FIRSTNAME_BOOKING_PAYLOAD.items():
-            assert response_data[key] == value
+        assert_response_fields(
+            response_data,
+            UPDATED_FIRSTNAME_BOOKING_PAYLOAD
+        )
 
     @allure.story("Негативные сценарии обновления брони")
     @allure.title("Обновление несуществующей брони")
@@ -109,8 +113,10 @@ class TestUpdateBooking:
         assert_status_code(r, 200)
         response_data = r.json()
 
-        for key, value in BOOKING_EMPTY_FIRSTNAME_PAYLOAD.items():
-            assert response_data[key] == value
+        assert_response_fields(
+            response_data,
+            BOOKING_EMPTY_FIRSTNAME_PAYLOAD
+        )
 
     @allure.story("Успешное обновление брони")
     @allure.title("Обновление с изменением дат")
@@ -129,8 +135,10 @@ class TestUpdateBooking:
         assert_status_code(r, 200)
         response_data = r.json()
 
-        for key, value in UPDATED_BOOKING_PAYLOAD.items():
-            assert response_data[key] == value
+        assert_response_fields(
+            response_data,
+            UPDATED_BOOKING_PAYLOAD
+        )
 
     @allure.story("Успешное обновление брони")
     @allure.title("Валидация схемы после обновления")
@@ -149,8 +157,10 @@ class TestUpdateBooking:
         assert_status_code(r, 200)
         response_data = r.json()
 
-        for key, value in UPDATED_BOOKING_PAYLOAD.items():
-            assert response_data[key] == value
+        assert_response_fields(
+            response_data,
+            UPDATED_BOOKING_PAYLOAD
+        )
 
         validate(instance=r.json(), schema=BOOKING_SCHEMA)
 
@@ -172,8 +182,10 @@ class TestUpdateBooking:
         assert_status_code(r, 200)
         response_data = r.json()
 
-        for key, value in UPDATED_PRICE_BOOKING_PAYLOAD.items():
-            assert response_data[key] == value
+        assert_response_fields(
+            response_data,
+            UPDATED_PRICE_BOOKING_PAYLOAD
+        )
 
     @allure.story("Успешное обновление брони")
     @allure.title("PATCH: обновление только depositpaid")
@@ -193,5 +205,8 @@ class TestUpdateBooking:
         assert_status_code(r, 200)
         response_data = r.json()
 
-        for key, value in UPDATED_DEPOSITPAID_BOOKING_PAYLOAD.items():
-            assert response_data[key] == value
+        assert_response_fields(
+            response_data,
+            UPDATED_DEPOSITPAID_BOOKING_PAYLOAD
+        )
+

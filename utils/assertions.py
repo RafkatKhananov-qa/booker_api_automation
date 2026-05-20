@@ -1,3 +1,6 @@
+import allure
+
+
 def assert_status_code(response, expected_code):
     assert response.status_code == expected_code, (
         f"Неверный статус ответа: {response.status_code}"
@@ -35,3 +38,9 @@ def assert_headers_in_response(response):
     assert "Content-Length" in response.headers
     assert response.headers["Content-Type"] == "application/json; charset=utf-8"
     assert int(response.headers["Content-Length"]) > 0
+
+
+@allure.step("Проверить поля ответа")
+def assert_response_fields(response_json, expected_data):
+    for key, value in expected_data.items():
+        assert response_json[key] == value

@@ -64,3 +64,6 @@ BOOKING_EMPTY_FIRSTNAME_PAYLOAD = {
           "checkout": "2026-01-05"
       }
 }
+
+
+NOT_VALID_PAYLOAD = "not valid json {{"
