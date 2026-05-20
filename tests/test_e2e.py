@@ -29,7 +29,6 @@ class TestE2E:
         logger.info("Шаг 2: Создание бронирования")
         r = create_booking(headers=api_headers)
         assert_status_code(r, 200)
-
         assert_field_in_response_message(r, "bookingid")
         booking_id = r.json()["bookingid"]
         logger.info(f"Бронирование создано, booking_id={booking_id}")
@@ -54,8 +53,10 @@ class TestE2E:
         logger.info(f"Данные после PUT подтверждены: {r.json()}")
 
         logger.info(f"Шаг 6: Частичное обновление (PATCH) booking_id={booking_id}")
-        r = patch_booking(booking_id, headers=api_headers_with_cookie(token))
-        assert_response_message(r, "totalprice", 200)
+        r = patch_booking(booking_id, headers=api_headers_with_cookie(token),
+                          payload={"totalprice": 500})
+        assert_status_code(r, 200)
+        assert_response_message(r, "totalprice", 500)
         assert_response_message(r, "firstname", "Dannie")
         logger.info(f"PATCH выполнен: totalprice={r.json()['totalprice']}")
 
