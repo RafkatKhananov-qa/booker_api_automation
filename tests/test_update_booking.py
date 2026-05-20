@@ -209,4 +209,3 @@ class TestUpdateBooking:
             response_data,
             UPDATED_DEPOSITPAID_BOOKING_PAYLOAD
         )
-
