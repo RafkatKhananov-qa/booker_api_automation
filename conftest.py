@@ -1,5 +1,14 @@
 import pytest
 
+from config.secret_config import BASE_URL
+
+
+@pytest.fixture
+def request_context(playwright):
+    context = playwright.request.new_context(base_url=BASE_URL)
+    yield context
+    context.dispose()
+
 
 @pytest.fixture
 def api_headers():
