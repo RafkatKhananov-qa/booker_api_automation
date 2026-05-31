@@ -15,13 +15,13 @@ from utils.assertions import (assert_status_code,
 class TestPerformance:
     @allure.story("Нагрузочный тест: 10 последовательных запросов")
     @allure.title("Замер времени 10 GET-запросов подряд")
-    def test_perf_001(self, api_headers):
+    def test_perf_001(self, request_context, api_headers):
         response_times = []
 
         for i in range(10):
             start_time = time.time()
 
-            r = get_bookings()
+            r = get_bookings(request_context)
 
             end_time = time.time()
 
@@ -41,49 +41,49 @@ class TestPerformance:
 
     @allure.story("Тест на идемпотентность получения токена")
     @allure.title("Два раза POST /auth → оба токена работают")
-    def test_perf_002(self, api_headers, api_headers_with_cookie):
-        r = create_token(headers=api_headers)
+    def test_perf_002(self, request_context, api_headers, api_headers_with_cookie):
+        r = create_token(request_context, headers=api_headers)
         assert_status_code(r, 200)
         assert_field_in_response_message(r, "token")
         token_1 = r.json()["token"]
 
-        r = create_token(headers=api_headers)
+        r = create_token(request_context, headers=api_headers)
         assert_status_code(r, 200)
         assert_field_in_response_message(r, "token")
         token_2 = r.json()["token"]
 
-        r = create_booking(headers=api_headers)
+        r = create_booking(request_context, headers=api_headers)
         assert_status_code(r, 200)
         assert_field_in_response_message(r, "bookingid")
         booking_id_1 = r.json()["bookingid"]
 
-        r = create_booking(headers=api_headers)
+        r = create_booking(request_context, headers=api_headers)
         assert_status_code(r, 200)
         assert_field_in_response_message(r, "bookingid")
         booking_id_2 = r.json()["bookingid"]
 
-        r = update_booking(booking_id_1, headers=api_headers_with_cookie(token_1))
+        r = update_booking(request_context, booking_id_1, headers=api_headers_with_cookie(token_1))
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "Dannie")
 
-        r = update_booking(booking_id_2, headers=api_headers_with_cookie(token_2))
+        r = update_booking(request_context, booking_id_2, headers=api_headers_with_cookie(token_2))
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "Dannie")
 
-        r = patch_booking(booking_id_1, headers=api_headers_with_cookie(token_1),
+        r = patch_booking(request_context, booking_id_1, headers=api_headers_with_cookie(token_1),
                           payload={"totalprice": 500})
         assert_status_code(r, 200)
         assert_response_message(r, "totalprice", 500)
         assert_response_message(r, "firstname", "Dannie")
 
-        r = patch_booking(booking_id_2, headers=api_headers_with_cookie(token_2),
+        r = patch_booking(request_context, booking_id_2, headers=api_headers_with_cookie(token_2),
                           payload={"totalprice": 500})
         assert_status_code(r, 200)
         assert_response_message(r, "totalprice", 500)
         assert_response_message(r, "firstname", "Dannie")
 
-        r = delete_booking(booking_id_1, headers=api_headers_with_cookie(token_1))
+        r = delete_booking(request_context, booking_id_1, headers=api_headers_with_cookie(token_1))
         assert_status_code(r, 201)
 
-        r = delete_booking(booking_id_2, headers=api_headers_with_cookie(token_2))
+        r = delete_booking(request_context, booking_id_2, headers=api_headers_with_cookie(token_2))
         assert_status_code(r, 201)

@@ -3,8 +3,8 @@ import allure
 
 @allure.step("Проверить статус-код")
 def assert_status_code(response, expected_code):
-    assert response.status_code == expected_code, (
-        f"Неверный статус ответа: {response.status_code}"
+    assert response.status == expected_code, (
+        f"Неверный статус ответа: {response.status}"
     )
 
 
@@ -42,10 +42,10 @@ def assert_array_not_empty(response):
 
 @allure.step("Проверить headers в ответе сервера")
 def assert_headers_in_response(response):
-    assert "Content-Type" in response.headers
-    assert "Content-Length" in response.headers
-    assert response.headers["Content-Type"] == "application/json; charset=utf-8"
-    assert int(response.headers["Content-Length"]) > 0
+    assert "content-type" in response.headers
+    assert "content-length" in response.headers
+    assert response.headers["content-type"] == "application/json; charset=utf-8"
+    assert int(response.headers["content-length"]) > 0
 
 
 @allure.step("Проверить поля ответа")
