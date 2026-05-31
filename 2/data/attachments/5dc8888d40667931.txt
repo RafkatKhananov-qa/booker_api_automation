@@ -1,0 +1,2 @@
+INFO     booker:test_e2e.py:19 === Старт теста: test_e2e_001 ===
+INFO     booker:test_e2e.py:21 Шаг 1: Авторизация
