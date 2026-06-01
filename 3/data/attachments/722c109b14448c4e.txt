@@ -1,0 +1,12 @@
+Request #1: 63.08 ms
+Request #2: 64.02 ms
+Request #3: 64.09 ms
+Request #4: 63.32 ms
+Request #5: 63.85 ms
+Request #6: 63.90 ms
+Request #7: 63.41 ms
+Request #8: 64.17 ms
+Request #9: 63.42 ms
+Request #10: 63.29 ms
+
+Average response time: 63.65 ms
