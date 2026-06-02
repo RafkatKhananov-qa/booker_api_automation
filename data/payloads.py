@@ -1,11 +1,14 @@
+from datetime import date, timedelta
+
+
 BOOKING_PAYLOAD = {
     "firstname": "John",
     "lastname": "Doe",
     "totalprice": 100,
     "depositpaid": True,
     "bookingdates": {
-        "checkin": "2026-01-01",
-        "checkout": "2026-01-05"
+        "checkin": str(date.today() + timedelta(days=1)),
+        "checkout": str(date.today() + timedelta(days=5))
     }
 }
 
@@ -15,8 +18,8 @@ UPDATED_BOOKING_PAYLOAD = {
     "totalprice": 200,
     "depositpaid": False,
     "bookingdates": {
-        "checkin": "2026-01-02",
-        "checkout": "2026-01-06"
+        "checkin": str(date.today() + timedelta(days=1)),
+        "checkout": str(date.today() + timedelta(days=7))
     },
     "additionalneeds": "Breakfast"
 }
@@ -27,8 +30,8 @@ UPDATED_FIRSTNAME_BOOKING_PAYLOAD = {
     "totalprice": 100,
     "depositpaid": True,
     "bookingdates": {
-        "checkin": "2026-01-01",
-        "checkout": "2026-01-05"
+        "checkin": str(date.today() + timedelta(days=1)),
+        "checkout": str(date.today() + timedelta(days=5))
     }
 }
 
@@ -38,8 +41,8 @@ UPDATED_PRICE_BOOKING_PAYLOAD = {
     "totalprice": 500,
     "depositpaid": True,
     "bookingdates": {
-        "checkin": "2026-01-01",
-        "checkout": "2026-01-05"
+        "checkin": str(date.today() + timedelta(days=1)),
+        "checkout": str(date.today() + timedelta(days=5))
     }
 }
 
@@ -49,8 +52,8 @@ UPDATED_DEPOSITPAID_BOOKING_PAYLOAD = {
     "totalprice": 100,
     "depositpaid": False,
     "bookingdates": {
-        "checkin": "2026-01-01",
-        "checkout": "2026-01-05"
+        "checkin": str(date.today() + timedelta(days=1)),
+        "checkout": str(date.today() + timedelta(days=5))
     }
 }
 
@@ -60,8 +63,8 @@ BOOKING_EMPTY_FIRSTNAME_PAYLOAD = {
       "totalprice": 100,
       "depositpaid": True,
       "bookingdates": {
-          "checkin": "2026-01-01",
-          "checkout": "2026-01-05"
+          "checkin": str(date.today() + timedelta(days=1)),
+          "checkout": str(date.today() + timedelta(days=5))
       }
 }
 

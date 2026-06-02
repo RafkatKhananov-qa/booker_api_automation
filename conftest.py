@@ -1,14 +1,20 @@
 import pytest
 
+from api.auth_api import create_token
 from config.secret_config import BASE_URL
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
+def auth_token(request_context):
+    r = create_token(request_context)
+    return r.json()["token"]
+
+
+@pytest.fixture(scope="session")
 def request_context(playwright):
     context = playwright.request.new_context(base_url=BASE_URL)
     yield context
     context.dispose()
-
 
 @pytest.fixture
 def api_headers():

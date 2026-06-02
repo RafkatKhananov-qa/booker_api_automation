@@ -35,12 +35,8 @@ class TestAuth:
 
     @allure.story("Успешная авторизация")
     @allure.title("Использование токена для защищённого запроса")
-    def test_auth_004(self, api_headers, api_headers_with_cookie, request_context):
-        r = create_token(headers=api_headers, request_context=request_context)
-        assert_status_code(r, 200)
-        assert_field_in_response_message(r, "token")
-        token = r.json()["token"]
-
+    def test_auth_004(self, api_headers, auth_token,
+                      api_headers_with_cookie, request_context):
         r = create_booking(headers=api_headers, request_context=request_context)
         assert_status_code(r, 200)
         assert_field_in_response_message(r, "bookingid")
@@ -50,7 +46,8 @@ class TestAuth:
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "John")
 
-        r = update_booking(request_context, booking_id, headers=api_headers_with_cookie(token))
+        r = update_booking(request_context, booking_id,
+                           headers=api_headers_with_cookie(auth_token))
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "Dannie")
 
@@ -61,10 +58,6 @@ class TestAuth:
     @allure.story("Негативные сценарии авторизации")
     @allure.title("Использование неверного токена")
     def test_auth_005(self, api_headers, api_headers_with_cookie, request_context):
-        r = create_token(headers=api_headers, request_context=request_context)
-        assert_status_code(r, 200)
-        assert_field_in_response_message(r, "token")
-
         r = create_booking(headers=api_headers, request_context=request_context)
         assert_status_code(r, 200)
         assert_field_in_response_message(r, "bookingid")
@@ -74,16 +67,13 @@ class TestAuth:
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "John")
 
-        r = update_booking(request_context, booking_id, headers=api_headers_with_cookie("45547"))
+        r = update_booking(request_context, booking_id,
+                           headers=api_headers_with_cookie("45547"))
         assert_status_code(r, 403)
 
     @allure.story("Негативные сценарии авторизации")
     @allure.title("Запрос без токена к защищённому эндпоинту")
     def test_auth_006(self, api_headers, request_context):
-        r = create_token(headers=api_headers, request_context=request_context)
-        assert_status_code(r, 200)
-        assert_field_in_response_message(r, "token")
-
         r = create_booking(headers=api_headers, request_context=request_context)
         assert_status_code(r, 200)
         assert_field_in_response_message(r, "bookingid")

@@ -41,7 +41,8 @@ class TestPerformance:
 
     @allure.story("Тест на идемпотентность получения токена")
     @allure.title("Два раза POST /auth → оба токена работают")
-    def test_perf_002(self, request_context, api_headers, api_headers_with_cookie):
+    def test_perf_002(self, request_context, auth_token,
+                      api_headers, api_headers_with_cookie):
         r = create_token(request_context, headers=api_headers)
         assert_status_code(r, 200)
         assert_field_in_response_message(r, "token")
