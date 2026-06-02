@@ -35,13 +35,8 @@ class TestValidation:
 
     @allure.story("Проверка заголовков ответа")
     @allure.title("Проверка заголовка Content-Type")
-    def test_val_003(self, request_context, api_headers, api_headers_with_cookie):
-        r = create_token(request_context, headers=api_headers)
-        assert_status_code(r, 200)
-        assert_field_in_response_message(r, "token")
-        token = r.json()["token"]
-        assert_headers_in_response(r)
-
+    def test_val_003(self, request_context, auth_token,
+                     api_headers, api_headers_with_cookie):
         r = create_booking(request_context, headers=api_headers)
         assert_status_code(r, 200)
         assert_field_in_response_message(r, "bookingid")
@@ -54,7 +49,8 @@ class TestValidation:
         validate(instance=r.json(), schema=BOOKING_SCHEMA)
         assert_headers_in_response(r)
 
-        r = update_booking(request_context, booking_id, headers=api_headers_with_cookie(token))
+        r = update_booking(request_context, booking_id,
+                           headers=api_headers_with_cookie(auth_token))
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "Dannie")
         assert_headers_in_response(r)
@@ -64,7 +60,8 @@ class TestValidation:
         assert_response_message(r, "firstname", "Dannie")
         assert_headers_in_response(r)
 
-        r = patch_booking(request_context, booking_id, headers=api_headers_with_cookie(token),
+        r = patch_booking(request_context, booking_id,
+                          headers=api_headers_with_cookie(auth_token),
                           payload={"totalprice": 500})
         assert_status_code(r, 200)
         assert_response_message(r, "totalprice", 500)
@@ -73,12 +70,8 @@ class TestValidation:
 
     @allure.story("Проверка времени ответа")
     @allure.title("Время < 2000 мс для всех эндпоинтов")
-    def test_val_004(self, request_context, api_headers, api_headers_with_cookie):
-        r = create_token(request_context, headers=api_headers)
-        assert_status_code(r, 200)
-        assert_field_in_response_message(r, "token")
-        token = r.json()["token"]
-
+    def test_val_004(self, request_context, auth_token,
+                     api_headers, api_headers_with_cookie):
         r = create_booking(request_context, headers=api_headers)
         assert_status_code(r, 200)
         assert_field_in_response_message(r, "bookingid")
@@ -89,7 +82,8 @@ class TestValidation:
         assert_response_message(r, "firstname", "John")
         validate(instance=r.json(), schema=BOOKING_SCHEMA)
 
-        r = update_booking(request_context, booking_id, headers=api_headers_with_cookie(token))
+        r = update_booking(request_context, booking_id,
+                           headers=api_headers_with_cookie(auth_token))
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "Dannie")
 
@@ -97,13 +91,15 @@ class TestValidation:
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "Dannie")
 
-        r = patch_booking(request_context, booking_id, headers=api_headers_with_cookie(token),
+        r = patch_booking(request_context, booking_id,
+                          headers=api_headers_with_cookie(auth_token),
                           payload={"totalprice": 500})
         assert_status_code(r, 200)
         assert_response_message(r, "totalprice", 500)
         assert_response_message(r, "firstname", "Dannie")
 
-        r = delete_booking(request_context, booking_id, headers=api_headers_with_cookie(token))
+        r = delete_booking(request_context, booking_id,
+                           headers=api_headers_with_cookie(auth_token))
         assert_status_code(r, 201)
 
         r = get_booking(request_context, booking_id)
