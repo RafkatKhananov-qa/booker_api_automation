@@ -15,7 +15,8 @@ class TestDeleteBooking:
         assert_field_in_response_message(r, "bookingid")
         booking_id = r.json()["bookingid"]
 
-        r = delete_booking(request_context, booking_id, headers=api_headers_with_cookie(auth_token))
+        r = delete_booking(request_context, booking_id,
+                           headers=api_headers_with_cookie(auth_token))
         assert_status_code(r, 201)
 
         r = get_booking(request_context, booking_id)
@@ -48,7 +49,8 @@ class TestDeleteBooking:
         assert_field_in_response_message(r, "bookingid")
         booking_id = r.json()["bookingid"]
 
-        r = delete_booking(request_context, booking_id, headers=api_headers_with_cookie("87987fgfdgfdg"))
+        r = delete_booking(request_context, booking_id,
+                           headers=api_headers_with_cookie("87987fgfdgfdg"))
         assert_status_code(r, 403)
 
     @allure.story("Негативные сценарии удаления брони")

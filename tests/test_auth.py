@@ -20,7 +20,8 @@ class TestAuth:
     @allure.story("Негативные сценарии авторизации")
     @allure.title("Получение токена с неверным паролем")
     def test_auth_002(self, api_headers, request_context):
-        r = create_token(headers=api_headers, password="wrongpass", request_context=request_context)
+        r = create_token(headers=api_headers, password="wrongpass",
+                         request_context=request_context)
         assert_status_code(r, 200)
         assert_response_message(r, "reason", "Bad credentials")
         assert_field_not_in_response_message(r, "token")
@@ -28,7 +29,8 @@ class TestAuth:
     @allure.story("Негативные сценарии авторизации")
     @allure.title("Получение токена с несуществующим пользователем")
     def test_auth_003(self, api_headers, request_context):
-        r = create_token(headers=api_headers, username="fakeuser", request_context=request_context)
+        r = create_token(headers=api_headers, username="fakeuser",
+                         request_context=request_context)
         assert_status_code(r, 200)
         assert_response_message(r, "reason", "Bad credentials")
         assert_field_not_in_response_message(r, "token")

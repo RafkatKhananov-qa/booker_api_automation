@@ -41,7 +41,8 @@ class TestCreateBooking:
     @allure.story("Негативные сценарии создания брони")
     @allure.title("Создание брони с checkout раньше checkin")
     def test_post_005(self, request_context, api_headers):
-        r = create_booking(request_context, api_headers, checkin="2026-05-07", checkout="2026-05-01")
+        r = create_booking(request_context, api_headers,
+                           checkin="2026-05-07", checkout="2026-05-01")
         assert_status_code(r, 200)
         assert r.json()["booking"]["bookingdates"]["checkin"] == "2026-05-07"
         assert r.json()["booking"]["bookingdates"]["checkout"] == "2026-05-01"

@@ -34,10 +34,12 @@ class TestGetBooking:
     @allure.story("Фильтрация списка броней")
     @allure.title("Фильтрация по датам (checkin/checkout)")
     def test_get_004(self, request_context, api_headers):
-        r = create_booking(request_context, api_headers, checkin="2026-04-01", checkout="2026-04-30")
+        r = create_booking(request_context, api_headers,
+                           checkin="2026-04-01", checkout="2026-04-30")
         assert_status_code(r, 200)
 
-        r = get_bookings(request_context, checkin="2026-04-01", checkout="2026-04-30")
+        r = get_bookings(request_context,
+                         checkin="2026-04-01", checkout="2026-04-30")
         assert_status_code(r, 200)
         assert_array_not_empty(r)
 
