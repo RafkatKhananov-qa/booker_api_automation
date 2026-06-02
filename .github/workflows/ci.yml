@@ -2,12 +2,12 @@ name: API Tests CI
 
 on:
   push:
-    branches: [master, develop]
+    branches: [main, develop]
   pull_request:
-    branches: [master, develop]
+    branches: [main, develop]
   workflow_dispatch:
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '0 5 * * *'
 
 jobs:
   test:
