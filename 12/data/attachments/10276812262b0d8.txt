@@ -1,0 +1,16 @@
+INFO     booker:test_e2e.py:19 === Старт теста: test_e2e_001 ===
+INFO     booker:test_e2e.py:21 Шаг 1: Создание бронирования
+INFO     booker:test_e2e.py:26 Бронирование создано, booking_id=5100
+INFO     booker:test_e2e.py:28 Шаг 2: Получение бронирования booking_id=5100
+INFO     booker:test_e2e.py:33 Бронирование получено: {'firstname': 'John', 'lastname': 'Doe', 'totalprice': 100, 'depositpaid': True, 'bookingdates': {'checkin': '2026-06-03', 'checkout': '2026-06-07'}}
+INFO     booker:test_e2e.py:35 Шаг 3: Полное обновление (PUT) booking_id=5100
+INFO     booker:test_e2e.py:40 Бронирование обновлено: firstname=Dannie
+INFO     booker:test_e2e.py:42 Шаг 4: Проверка обновления GET booking_id=5100
+INFO     booker:test_e2e.py:46 Данные после PUT подтверждены: {'firstname': 'Dannie', 'lastname': 'Brown', 'totalprice': 200, 'depositpaid': False, 'bookingdates': {'checkin': '2026-06-03', 'checkout': '2026-06-09'}, 'additionalneeds': 'Breakfast'}
+INFO     booker:test_e2e.py:48 Шаг 5: Частичное обновление (PATCH) booking_id=5100
+INFO     booker:test_e2e.py:55 PATCH выполнен: totalprice=500
+INFO     booker:test_e2e.py:57 Шаг 6: Удаление бронирования booking_id=5100
+INFO     booker:test_e2e.py:61 Бронирование удалено, статус=201
+INFO     booker:test_e2e.py:63 Шаг 7: Проверка удаления GET booking_id=5100
+INFO     booker:test_e2e.py:66 Бронирование не найдено (404)
+INFO     booker:test_e2e.py:68 === Тест test_e2e_001 завершён успешно ===
