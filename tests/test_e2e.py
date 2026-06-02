@@ -33,7 +33,8 @@ class TestE2E:
         logger.info(f"Бронирование получено: {r.json()}")
 
         logger.info(f"Шаг 3: Полное обновление (PUT) booking_id={booking_id}")
-        r = update_booking(request_context, booking_id, headers=api_headers_with_cookie(auth_token))
+        r = update_booking(request_context, booking_id,
+                           headers=api_headers_with_cookie(auth_token))
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "Dannie")
         logger.info(f"Бронирование обновлено: firstname={r.json()['firstname']}")
@@ -45,7 +46,8 @@ class TestE2E:
         logger.info(f"Данные после PUT подтверждены: {r.json()}")
 
         logger.info(f"Шаг 5: Частичное обновление (PATCH) booking_id={booking_id}")
-        r = patch_booking(request_context, booking_id, headers=api_headers_with_cookie(auth_token),
+        r = patch_booking(request_context, booking_id,
+                          headers=api_headers_with_cookie(auth_token),
                           payload={"totalprice": 500})
         assert_status_code(r, 200)
         assert_response_message(r, "totalprice", 500)

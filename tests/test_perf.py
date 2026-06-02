@@ -63,28 +63,34 @@ class TestPerformance:
         assert_field_in_response_message(r, "bookingid")
         booking_id_2 = r.json()["bookingid"]
 
-        r = update_booking(request_context, booking_id_1, headers=api_headers_with_cookie(token_1))
+        r = update_booking(request_context, booking_id_1,
+                           headers=api_headers_with_cookie(token_1))
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "Dannie")
 
-        r = update_booking(request_context, booking_id_2, headers=api_headers_with_cookie(token_2))
+        r = update_booking(request_context, booking_id_2,
+                           headers=api_headers_with_cookie(token_2))
         assert_status_code(r, 200)
         assert_response_message(r, "firstname", "Dannie")
 
-        r = patch_booking(request_context, booking_id_1, headers=api_headers_with_cookie(token_1),
+        r = patch_booking(request_context, booking_id_1,
+                          headers=api_headers_with_cookie(token_1),
                           payload={"totalprice": 500})
         assert_status_code(r, 200)
         assert_response_message(r, "totalprice", 500)
         assert_response_message(r, "firstname", "Dannie")
 
-        r = patch_booking(request_context, booking_id_2, headers=api_headers_with_cookie(token_2),
+        r = patch_booking(request_context, booking_id_2,
+                          headers=api_headers_with_cookie(token_2),
                           payload={"totalprice": 500})
         assert_status_code(r, 200)
         assert_response_message(r, "totalprice", 500)
         assert_response_message(r, "firstname", "Dannie")
 
-        r = delete_booking(request_context, booking_id_1, headers=api_headers_with_cookie(token_1))
+        r = delete_booking(request_context, booking_id_1,
+                           headers=api_headers_with_cookie(token_1))
         assert_status_code(r, 201)
 
-        r = delete_booking(request_context, booking_id_2, headers=api_headers_with_cookie(token_2))
+        r = delete_booking(request_context, booking_id_2,
+                           headers=api_headers_with_cookie(token_2))
         assert_status_code(r, 201)
