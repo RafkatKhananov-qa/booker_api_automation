@@ -1,7 +1,6 @@
 import pytest
 
 from api.auth_api import create_token
-from api.booking_api import create_booking, delete_booking
 from config.secret_config import BASE_URL
 
 
